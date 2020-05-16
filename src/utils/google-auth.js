@@ -1,9 +1,9 @@
 const fs = require("fs")
-const path = require("path")
-const {google} = require("googleapis")
 
-const googledocsPath = path.join(process.cwd(), ".google")
-const tokenPath = path.join(googledocsPath, "token.json")
+const {google} = require("googleapis")
+const {CACHE_PATH, TOKEN_PATH} = require("./constants")
+console.log("cache", CACHE_PATH)
+
 const token_fields = [
   "client_id",
   "client_secret",
@@ -27,8 +27,8 @@ const isTokenValid = token =>
 
 class GoogleAuth {
   constructor() {
-    if (!fs.existsSync(googledocsPath)) {
-      fs.mkdirSync(googledocsPath)
+    if (!fs.existsSync(CACHE_PATH)) {
+      fs.mkdirSync(CACHE_PATH, {recursive: true})
     }
 
     const {client_id, client_secret, ...token} = this.getToken()
@@ -67,9 +67,9 @@ class GoogleAuth {
 
     if (process.env.GATSBY_SOURCE_GOOGLE_DOCS_TOKEN) {
       token = JSON.parse(process.env.GATSBY_SOURCE_GOOGLE_DOCS_TOKEN)
-    } else if (fs.existsSync(tokenPath)) {
+    } else if (fs.existsSync(TOKEN_PATH)) {
       try {
-        token = JSON.parse(fs.readFileSync(tokenPath, "utf-8"))
+        token = JSON.parse(fs.readFileSync(TOKEN_PATH, "utf-8"))
       } catch (e) {
         throw new Error("Impossible to retrieve token. Please regenerate one")
       }
@@ -78,13 +78,14 @@ class GoogleAuth {
     if (isTokenValid(token)) {
       return token
     } else {
-      throw new Error("Invalid token. Please regenerate one")
+      console.log(token)
+      throw new Error("Invalid token. Please regenerate one" + token)
     }
   }
 
   setToken(token) {
     if (isTokenValid(token)) {
-      fs.writeFileSync(tokenPath, JSON.stringify(token))
+      fs.writeFileSync(TOKEN_PATH, JSON.stringify(token))
     }
   }
 

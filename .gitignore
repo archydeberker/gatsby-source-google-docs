@@ -1,6 +1,8 @@
 node_modules
-/gatsby-node.js
-/create-schema-customization.js
-/on-create-node.js
-/source-nodes.js
 /utils
+/create-schema-customization.js
+/gatsby-node.js
+/on-create-node.js
+/on-post-build.js
+/on-pre-bootstrap.js
+/source-nodes.js

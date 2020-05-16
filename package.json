@@ -21,6 +21,7 @@
   ],
   "main": "index.js",
   "dependencies": {
+    "fs-extra": "^9.0.0",
     "gatsby-source-filesystem": "^2.1.48",
     "googleapis": "47.0.0",
     "inquirer": "^7.0.4",
@@ -45,7 +46,7 @@
     "gatsby": "^2.0.0"
   },
   "scripts": {
-    "clean": "rm -rf ./gatsby-node.js ./utils",
+    "clean": "rm -rf ./utils ./gatsby-node.js ./create-schema-customization.js ./on-create-node.js ./on-post-build.js ./on-pre-bootstrap.js ./source-nodes.js",
     "prebuild": "yarn clean",
     "build": "cross-env BABEL_ENV=production babel src --out-dir . --ignore 'src/__tests__/*'",
     "lint": "eslint --ext .js src",

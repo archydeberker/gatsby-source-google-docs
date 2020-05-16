@@ -2,12 +2,11 @@
 /* eslint-disable no-console */
 
 const fs = require("fs")
-const path = require("path")
 const {google} = require("googleapis")
 const inquirer = require("inquirer")
 
-const GOOGLEDOCS_PATH = path.join(process.cwd(), ".google")
-const TOKEN_PATH = path.join(GOOGLEDOCS_PATH, "token.json")
+const {CACHE_PATH, TOKEN_PATH} = require("./src/utils/constants")
+
 const NEW_PROJECT_URL = "https://console.developers.google.com/projectcreate"
 const DOCS_API_URL =
   "https://console.developers.google.com/apis/library/docs.googleapis.com"
@@ -120,19 +119,17 @@ async function generateToken() {
     }
 
     const {tokens} = await client.getToken(authorization_code)
-
-    if (!fs.existsSync(GOOGLEDOCS_PATH)) {
-      fs.mkdirSync(GOOGLEDOCS_PATH)
+    const token = {
+      client_id,
+      client_secret,
+      ...tokens,
     }
 
-    fs.writeFileSync(
-      TOKEN_PATH,
-      JSON.stringify({
-        client_id,
-        client_secret,
-        ...tokens,
-      })
-    )
+    if (!fs.existsSync(CACHE_PATH)) {
+      fs.mkdirSync(CACHE_PATH, {recursive: true})
+    }
+
+    fs.writeFileSync(TOKEN_PATH, JSON.stringify(token))
 
     console.log("")
     console.log("Token generated successfully")
